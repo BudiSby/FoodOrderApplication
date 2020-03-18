@@ -1,8 +1,12 @@
 package com.example.foodorderapplication;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,9 @@ import static com.example.foodorderapplication.FinalCartPreview.temparraylist;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class OrderConfirmationPage extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private  FirebaseDatabase firebaseDatabase;
@@ -28,11 +35,52 @@ public class OrderConfirmationPage extends AppCompatActivity {
     private String userId;
     private ListView listView;
 
+    @Bind(R.id.checkImageView)
+    ImageView checkMarkImageView;
+
+
+    @Bind(R.id.circleImageView)
+    ImageView circleImageView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_confirmation_page);
-        listView=(ListView)findViewById(R.id.listview_order);
+
+        ButterKnife.bind(this);
+
+
+    }
+    public static void start(Context context) {
+        Intent intent = new Intent(context, OrderConfirmationPage.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        //Animate new activity from bottom
+        ((Activity) context).overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
+    }
+
+    int longestAnimationTime = 1000; //milliseconds, circle animation time defined in XML
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+
+
+        ((Animatable) circleImageView.getDrawable()).start();
+
+        checkMarkImageView.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                ((Animatable) checkMarkImageView.getDrawable()).start();
+            }
+        }, longestAnimationTime);
+    }
+
+
+
+      /*  listView=(ListView)findViewById(R.id.listview_order);
 
         mAuth=FirebaseAuth.getInstance();
         firebaseDatabase= FirebaseDatabase.getInstance();
@@ -64,9 +112,9 @@ public class OrderConfirmationPage extends AppCompatActivity {
             bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());
             bookMyOrderModel.setPincode(ds.child(userId).getValue(BookMyOrderModel.class).getPincode());
             bookMyOrderModel.setTotalamount(ds.child(userId).getValue(BookMyOrderModel.class).getTotalamount());
-/*          bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());
+*//*          bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());
             bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());
-            bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());*/
+            bookMyOrderModel.setPhonenumber(ds.child(userId).getValue(BookMyOrderModel.class).getPhonenumber());*//*
             ArrayList<String> arrayList=new ArrayList<>();
             arrayList.add(bookMyOrderModel.getName());
             arrayList.add(bookMyOrderModel.getAddress());
@@ -76,12 +124,12 @@ public class OrderConfirmationPage extends AppCompatActivity {
             ArrayAdapter adapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,arrayList);
                 listView.setAdapter(adapter);
 
-            /*else
+            *//*else
             {
                 finish();
                 startActivity(new Intent(this,ProfileActivity.class));
-            }*/
+            }*//*
 
-        }
-    }
+        }*/
+
 }
